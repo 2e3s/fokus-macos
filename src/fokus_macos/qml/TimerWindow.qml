@@ -57,13 +57,6 @@ Window {
             anchors.margins: 20
             spacing: 14
 
-            Label {
-                Layout.alignment: Qt.AlignHCenter
-                text: AppState.sessionText
-                color: palette.mid
-                font.pointSize: 11
-            }
-
             Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
