@@ -1,0 +1,2 @@
+[console_scripts]
+fokus-macos = fokus_macos.app:main

@@ -1,3 +1,13 @@
+Metadata-Version: 2.4
+Name: fokus-macos
+Version: 0.1.0
+Summary: Standalone macOS menu bar Pomodoro app based on the Fokus KDE plasmoid
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: PySide6>=6.8
+Dynamic: license-file
+
 # Fokus for macOS
 
 Fokus is now a standalone macOS menu bar Pomodoro application derived from the original KDE Plasma plasmoid in this repository.
