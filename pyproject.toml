@@ -8,7 +8,10 @@ version = "0.1.0"
 description = "Standalone macOS menu bar Pomodoro app based on the Fokus KDE plasmoid"
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = ["PySide6>=6.8"]
+dependencies = [
+    "PySide6>=6.8",
+    "pyobjc-framework-Cocoa>=10,<13; sys_platform == 'darwin'",
+]
 
 [project.scripts]
 fokus-macos = "fokus_macos.app:main"

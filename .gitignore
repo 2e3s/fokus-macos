@@ -3,3 +3,4 @@
 *.plasmoid
 *.vscode
 .venv
+*.egg-info

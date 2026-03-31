@@ -9,8 +9,8 @@ from dataclasses import asdict, dataclass, fields
 from pathlib import Path
 from typing import Callable, Optional
 
-from PySide6.QtCore import QObject, QSettings, Qt, QTimer, Signal, QUrl
-from PySide6.QtGui import QAction, QCloseEvent, QFont, QFontDatabase, QIcon, QWheelEvent
+from PySide6.QtCore import QObject, QEvent, QPoint, QPointF, QSettings, Qt, QTimer, Signal, QUrl
+from PySide6.QtGui import QAction, QCloseEvent, QCursor, QFont, QFontDatabase, QIcon, QWheelEvent
 from PySide6.QtMultimedia import QSoundEffect
 from PySide6.QtWidgets import (
     QApplication,
@@ -39,6 +39,14 @@ APP_ORG = "com.dv"
 APP_NAME = "Fokus"
 LAUNCH_AGENT_ID = "com.dv.fokus.macos"
 DEFAULT_BEEP_TIMEOUT_MS = 6000
+
+try:
+    from AppKit import NSEvent, NSEventMaskScrollWheel
+except ImportError:  # pragma: no cover - only exercised outside macOS/PyObjC installs
+    NSEvent = None
+    NSEventMaskScrollWheel = None
+
+
 def icon_directory() -> Path:
     return Path(__file__).resolve().parent / "icons"
 
@@ -527,25 +535,8 @@ class TimerWindow(QMainWindow):
         super().wheelEvent(event)
 
     def adjust_by_wheel_delta(self, event_delta: int) -> bool:
-        if self.app.settings.flowmodoro_mode_enabled or event_delta == 0:
-            return False
-
-        self.wheel_delta += event_delta
-        increment = 0
-
-        while self.wheel_delta >= 120:
-            self.wheel_delta -= 120
-            increment += 1
-
-        while self.wheel_delta <= -120:
-            self.wheel_delta += 120
-            increment -= 1
-
-        while increment != 0:
-            self.app.engine.shift_counter(60 if increment > 0 else -60)
-            increment += -1 if increment > 0 else 1
-
-        return True
+        self.wheel_delta = self.app.adjust_timer_by_wheel_delta(self.wheel_delta, event_delta)
+        return event_delta != 0 and not self.app.settings.flowmodoro_mode_enabled
 
     def refresh(self) -> None:
         engine = self.app.engine
@@ -640,6 +631,112 @@ class BreakOverlay(QWidget):
             self.activateWindow()
         else:
             self.hide()
+
+
+class TrayIcon(QSystemTrayIcon):
+    def __init__(self, app: "FokusApp") -> None:
+        super().__init__(app)
+        self.app = app
+        self.wheel_delta = 0
+
+    def event(self, event: QEvent) -> bool:
+        if event.type() == QEvent.Type.Wheel:
+            event_delta = event.angleDelta().y() or event.pixelDelta().y()
+            self.wheel_delta = self.app.adjust_timer_by_wheel_delta(self.wheel_delta, event_delta)
+            if event_delta != 0 and not self.app.settings.flowmodoro_mode_enabled:
+                event.accept()
+                return True
+        return super().event(event)
+
+
+class MacOSTrayScrollMonitor(QObject):
+    PRECISE_SCROLL_STEP = 6.0
+    LINE_SCROLL_STEP = 1.0
+
+    def __init__(self, app: "FokusApp") -> None:
+        super().__init__(app)
+        self.app = app
+        self.global_monitor = None
+        self.local_monitor = None
+        self.precise_wheel_delta = 0.0
+        self.line_wheel_delta = 0.0
+        self.last_event_signature: Optional[tuple[int, float]] = None
+
+        if NSEvent is None or NSEventMaskScrollWheel is None:
+            return
+
+        self.global_monitor = NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(
+            NSEventMaskScrollWheel,
+            self.handle_global_scroll,
+        )
+        self.local_monitor = NSEvent.addLocalMonitorForEventsMatchingMask_handler_(
+            NSEventMaskScrollWheel,
+            self.handle_local_scroll,
+        )
+
+    def stop(self) -> None:
+        if self.global_monitor is not None and NSEvent is not None:
+            NSEvent.removeMonitor_(self.global_monitor)
+            self.global_monitor = None
+        if self.local_monitor is not None and NSEvent is not None:
+            NSEvent.removeMonitor_(self.local_monitor)
+            self.local_monitor = None
+
+    def handle_global_scroll(self, event) -> None:
+        self.process_scroll(event)
+
+    def handle_local_scroll(self, event):
+        if self.process_scroll(event):
+            return None
+        return event
+
+    def process_scroll(self, event) -> bool:
+        geometry = self.app.tray.geometry()
+        if geometry.isNull() or not geometry.contains(QCursor.pos()):
+            return False
+        if self.is_momentum_scroll(event):
+            return False
+
+        event_delta, step_threshold = self.normalize_event_delta(event)
+        event_signature = self.event_signature(event, event_delta)
+        if event_signature is not None and event_signature == self.last_event_signature:
+            return False
+        self.last_event_signature = event_signature
+
+        if step_threshold == self.PRECISE_SCROLL_STEP:
+            self.precise_wheel_delta = self.app.adjust_timer_by_wheel_delta(
+                self.precise_wheel_delta,
+                event_delta,
+                step_threshold=step_threshold,
+            )
+        else:
+            self.line_wheel_delta = self.app.adjust_timer_by_wheel_delta(
+                self.line_wheel_delta,
+                event_delta,
+                step_threshold=step_threshold,
+            )
+        return event_delta != 0 and not self.app.settings.flowmodoro_mode_enabled
+
+    @staticmethod
+    def is_momentum_scroll(event) -> bool:
+        return hasattr(event, "momentumPhase") and int(event.momentumPhase()) != 0
+
+    @classmethod
+    def normalize_event_delta(cls, event) -> tuple[float, float]:
+        if hasattr(event, "hasPreciseScrollingDeltas") and event.hasPreciseScrollingDeltas():
+            return float(event.scrollingDeltaY()), cls.PRECISE_SCROLL_STEP
+        delta = float(event.deltaY())
+        if delta > 0:
+            return 1.0, cls.LINE_SCROLL_STEP
+        if delta < 0:
+            return -1.0, cls.LINE_SCROLL_STEP
+        return 0.0, cls.LINE_SCROLL_STEP
+
+    @staticmethod
+    def event_signature(event, normalized_delta: float) -> Optional[tuple[int, float]]:
+        if not hasattr(event, "timestamp"):
+            return None
+        return int(round(float(event.timestamp()) * 1000)), normalized_delta
 
 
 class SettingsDialog(QDialog):
@@ -823,11 +920,13 @@ class FokusApp(QObject):
         self.engine.start_notification.connect(lambda message: self.notify(message, start=True))
         self.engine.end_notification.connect(lambda message: self.notify(message, start=False))
 
-        self.tray = QSystemTrayIcon(self)
+        self.tray = TrayIcon(self)
         self.tray.setToolTip("Fokus")
         self.tray.activated.connect(self._handle_tray_activation)
         self.menu = QMenu()
         self.tray.setContextMenu(self.menu)
+        self.tray_scroll_monitor = MacOSTrayScrollMonitor(self)
+        self.qt_app.aboutToQuit.connect(self.tray_scroll_monitor.stop)
 
         self.time_action = QAction("", self.menu)
         self.time_action.setEnabled(False)
@@ -879,6 +978,33 @@ class FokusApp(QObject):
         self.integration.sync_autostart(settings.autostart)
         self.engine.set_settings(settings)
         self.refresh_ui()
+
+    def adjust_timer_by_wheel_delta(
+        self,
+        wheel_delta: float,
+        event_delta: float,
+        *,
+        step_threshold: float = 120.0,
+    ) -> float:
+        if self.settings.flowmodoro_mode_enabled or event_delta == 0:
+            return wheel_delta
+
+        wheel_delta += event_delta
+        increment = 0
+
+        while wheel_delta >= step_threshold:
+            wheel_delta -= step_threshold
+            increment += 1
+
+        while wheel_delta <= -step_threshold:
+            wheel_delta += step_threshold
+            increment -= 1
+
+        while increment != 0:
+            self.engine.shift_counter(60 if increment > 0 else -60)
+            increment += -1 if increment > 0 else 1
+
+        return wheel_delta
 
     def notify(self, message: str, *, start: bool) -> None:
         title = "Fokus"
