@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from PySide6.QtCore import QObject, QSettings, Qt, QTimer, Signal, QUrl
-from PySide6.QtGui import QAction, QCloseEvent, QFont, QFontDatabase, QIcon
+from PySide6.QtGui import QAction, QCloseEvent, QFont, QFontDatabase, QIcon, QWheelEvent
 from PySide6.QtMultimedia import QSoundEffect
 from PySide6.QtWidgets import (
     QApplication,
@@ -468,6 +468,7 @@ class TimerWindow(QMainWindow):
     def __init__(self, app: "FokusApp") -> None:
         super().__init__()
         self.app = app
+        self.wheel_delta = 0
         self.setWindowTitle("Fokus")
         self.setMinimumSize(360, 240)
         central = QWidget(self)
@@ -518,6 +519,33 @@ class TimerWindow(QMainWindow):
     def closeEvent(self, event: QCloseEvent) -> None:
         event.ignore()
         self.hide()
+
+    def wheelEvent(self, event: QWheelEvent) -> None:
+        if self.adjust_by_wheel_delta(event.angleDelta().y() or event.pixelDelta().y()):
+            event.accept()
+            return
+        super().wheelEvent(event)
+
+    def adjust_by_wheel_delta(self, event_delta: int) -> bool:
+        if self.app.settings.flowmodoro_mode_enabled or event_delta == 0:
+            return False
+
+        self.wheel_delta += event_delta
+        increment = 0
+
+        while self.wheel_delta >= 120:
+            self.wheel_delta -= 120
+            increment += 1
+
+        while self.wheel_delta <= -120:
+            self.wheel_delta += 120
+            increment -= 1
+
+        while increment != 0:
+            self.app.engine.shift_counter(60 if increment > 0 else -60)
+            increment += -1 if increment > 0 else 1
+
+        return True
 
     def refresh(self) -> None:
         engine = self.app.engine
