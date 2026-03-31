@@ -41,13 +41,6 @@ Window {
         anchors.margins: 20
         spacing: 16
 
-        Label {
-            Layout.fillWidth: true
-            text: qsTr("Settings")
-            font.pixelSize: 24
-            font.weight: Font.DemiBold
-        }
-
         TabBar {
             id: tabs
             Layout.fillWidth: true

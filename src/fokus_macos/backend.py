@@ -19,7 +19,7 @@ LOGGER = logging.getLogger("fokus_macos")
 APP_ORG = "com.dv"
 APP_NAME = "Fokus"
 LAUNCH_AGENT_ID = "com.dv.fokus.macos"
-POSTPONE_MIGRATION_KEY = "portable_refactor_postpone_migration_v1"
+POSTPONE_MIGRATION_KEY = "portable_refactor_postpone_migration_v2"
 
 
 def launch_agent_path() -> Path:
