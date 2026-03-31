@@ -20,7 +20,12 @@ fokus-macos = "fokus_macos.app:main"
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
-fokus_macos = ["icons/*.svg"]
+fokus_macos = [
+    "icons/*.svg",
+    "qml/*.qml",
+    "qml/components/*.qml",
+    "qml/pages/*.qml",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
