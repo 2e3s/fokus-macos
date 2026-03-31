@@ -8,16 +8,13 @@ from PySide6.QtGui import QAction, QCursor, QIcon
 from PySide6.QtWidgets import QMenu, QSystemTrayIcon
 
 from .backend import APP_NAME, FokusBackend
+from .resources import icon_directory
 
 try:
     from AppKit import NSEvent, NSEventMaskScrollWheel
 except ImportError:  # pragma: no cover
     NSEvent = None
     NSEventMaskScrollWheel = None
-
-
-def icon_directory() -> Path:
-    return Path(__file__).resolve().parent / "icons"
 
 
 def icon_path(name: str) -> Path:

@@ -13,8 +13,14 @@ dependencies = [
     "pyobjc-framework-Cocoa>=10,<13; sys_platform == 'darwin'",
 ]
 
+[project.optional-dependencies]
+build = [
+    "PyInstaller>=6.11",
+]
+
 [project.scripts]
 fokus-macos = "fokus_macos.app:main"
+fokus-macos-build = "fokus_macos.build:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

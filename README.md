@@ -37,6 +37,24 @@ You can also run it directly with:
 PYTHONPATH=src python -m fokus_macos
 ```
 
+## Build a standalone macOS app bundle
+
+Install the optional build dependency and run the build helper:
+
+```bash
+. .venv/bin/activate
+python -m pip install -e ".[build]"
+fokus-macos-build
+```
+
+This produces `dist/Fokus.app`, which you can launch directly in Finder or from Terminal:
+
+```bash
+open dist/Fokus.app
+```
+
+If you prefer to call PyInstaller yourself, the repository includes `fokus-macos.spec`.
+
 ## What the macOS app does
 
 - Runs in the macOS menu bar via Qt's `QSystemTrayIcon`

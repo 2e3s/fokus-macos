@@ -3,18 +3,14 @@ from __future__ import annotations
 import logging
 import os
 import sys
-from pathlib import Path
 
 from PySide6.QtCore import QSettings, QUrl
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtWidgets import QApplication, QMessageBox, QSystemTrayIcon
 
 from .backend import APP_NAME, APP_ORG, FokusBackend
+from .resources import qml_directory
 from .shell import MacOSTrayShell, icon_path
-
-
-def qml_directory() -> Path:
-    return Path(__file__).resolve().parent / "qml"
 
 
 def ensure_assets_exist() -> None:
