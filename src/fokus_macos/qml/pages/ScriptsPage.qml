@@ -14,80 +14,38 @@ ScrollView {
 
     ColumnLayout {
         width: parent.width
-        spacing: 16
+        spacing: 12
 
-        function scriptGroup(titleText, enabledKey, pathKey, dialogRef) {
-            return 0
-        }
-
-        GroupBox {
-            title: qsTr("Start focus")
+        GridLayout {
             Layout.fillWidth: true
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 10
-                CheckBox { checked: AppDraftSettings.start_focus_script_enabled; onToggled: AppDraftSettings.start_focus_script_enabled = checked; text: qsTr("Enabled") }
-                RowLayout {
-                    TextField { Layout.fillWidth: true; text: AppDraftSettings.start_focus_script_filepath; enabled: AppDraftSettings.start_focus_script_enabled; onTextChanged: AppDraftSettings.start_focus_script_filepath = text }
-                    Button { text: qsTr("Choose"); enabled: AppDraftSettings.start_focus_script_enabled; onClicked: startFocusDialog.open() }
-                }
-            }
-        }
+            columns: 4
+            columnSpacing: 12
+            rowSpacing: 10
 
-        GroupBox {
-            title: qsTr("Start break")
-            Layout.fillWidth: true
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 10
-                CheckBox { checked: AppDraftSettings.start_break_script_enabled; onToggled: AppDraftSettings.start_break_script_enabled = checked; text: qsTr("Enabled") }
-                RowLayout {
-                    TextField { Layout.fillWidth: true; text: AppDraftSettings.start_break_script_filepath; enabled: AppDraftSettings.start_break_script_enabled; onTextChanged: AppDraftSettings.start_break_script_filepath = text }
-                    Button { text: qsTr("Choose"); enabled: AppDraftSettings.start_break_script_enabled; onClicked: startBreakDialog.open() }
-                }
-            }
-        }
+            Label { text: qsTr("Start focus") }
+            CheckBox { text: qsTr("Enabled"); checked: AppDraftSettings.start_focus_script_enabled; onToggled: AppDraftSettings.start_focus_script_enabled = checked }
+            TextField { Layout.fillWidth: true; text: AppDraftSettings.start_focus_script_filepath; enabled: AppDraftSettings.start_focus_script_enabled; onTextChanged: AppDraftSettings.start_focus_script_filepath = text }
+            Button { text: qsTr("Choose"); enabled: AppDraftSettings.start_focus_script_enabled; onClicked: startFocusDialog.open() }
 
-        GroupBox {
-            title: qsTr("End focus")
-            Layout.fillWidth: true
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 10
-                CheckBox { checked: AppDraftSettings.end_focus_script_enabled; onToggled: AppDraftSettings.end_focus_script_enabled = checked; text: qsTr("Enabled") }
-                RowLayout {
-                    TextField { Layout.fillWidth: true; text: AppDraftSettings.end_focus_script_filepath; enabled: AppDraftSettings.end_focus_script_enabled; onTextChanged: AppDraftSettings.end_focus_script_filepath = text }
-                    Button { text: qsTr("Choose"); enabled: AppDraftSettings.end_focus_script_enabled; onClicked: endFocusDialog.open() }
-                }
-            }
-        }
+            Label { text: qsTr("Start break") }
+            CheckBox { text: qsTr("Enabled"); checked: AppDraftSettings.start_break_script_enabled; onToggled: AppDraftSettings.start_break_script_enabled = checked }
+            TextField { Layout.fillWidth: true; text: AppDraftSettings.start_break_script_filepath; enabled: AppDraftSettings.start_break_script_enabled; onTextChanged: AppDraftSettings.start_break_script_filepath = text }
+            Button { text: qsTr("Choose"); enabled: AppDraftSettings.start_break_script_enabled; onClicked: startBreakDialog.open() }
 
-        GroupBox {
-            title: qsTr("End break")
-            Layout.fillWidth: true
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 10
-                CheckBox { checked: AppDraftSettings.end_break_script_enabled; onToggled: AppDraftSettings.end_break_script_enabled = checked; text: qsTr("Enabled") }
-                RowLayout {
-                    TextField { Layout.fillWidth: true; text: AppDraftSettings.end_break_script_filepath; enabled: AppDraftSettings.end_break_script_enabled; onTextChanged: AppDraftSettings.end_break_script_filepath = text }
-                    Button { text: qsTr("Choose"); enabled: AppDraftSettings.end_break_script_enabled; onClicked: endBreakDialog.open() }
-                }
-            }
-        }
+            Label { text: qsTr("End focus") }
+            CheckBox { text: qsTr("Enabled"); checked: AppDraftSettings.end_focus_script_enabled; onToggled: AppDraftSettings.end_focus_script_enabled = checked }
+            TextField { Layout.fillWidth: true; text: AppDraftSettings.end_focus_script_filepath; enabled: AppDraftSettings.end_focus_script_enabled; onTextChanged: AppDraftSettings.end_focus_script_filepath = text }
+            Button { text: qsTr("Choose"); enabled: AppDraftSettings.end_focus_script_enabled; onClicked: endFocusDialog.open() }
 
-        GroupBox {
-            title: qsTr("Stop/reset")
-            Layout.fillWidth: true
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 10
-                CheckBox { checked: AppDraftSettings.stop_script_enabled; onToggled: AppDraftSettings.stop_script_enabled = checked; text: qsTr("Enabled") }
-                RowLayout {
-                    TextField { Layout.fillWidth: true; text: AppDraftSettings.stop_script_filepath; enabled: AppDraftSettings.stop_script_enabled; onTextChanged: AppDraftSettings.stop_script_filepath = text }
-                    Button { text: qsTr("Choose"); enabled: AppDraftSettings.stop_script_enabled; onClicked: stopDialog.open() }
-                }
-            }
+            Label { text: qsTr("End break") }
+            CheckBox { text: qsTr("Enabled"); checked: AppDraftSettings.end_break_script_enabled; onToggled: AppDraftSettings.end_break_script_enabled = checked }
+            TextField { Layout.fillWidth: true; text: AppDraftSettings.end_break_script_filepath; enabled: AppDraftSettings.end_break_script_enabled; onTextChanged: AppDraftSettings.end_break_script_filepath = text }
+            Button { text: qsTr("Choose"); enabled: AppDraftSettings.end_break_script_enabled; onClicked: endBreakDialog.open() }
+
+            Label { text: qsTr("Stop/reset") }
+            CheckBox { text: qsTr("Enabled"); checked: AppDraftSettings.stop_script_enabled; onToggled: AppDraftSettings.stop_script_enabled = checked }
+            TextField { Layout.fillWidth: true; text: AppDraftSettings.stop_script_filepath; enabled: AppDraftSettings.stop_script_enabled; onTextChanged: AppDraftSettings.stop_script_filepath = text }
+            Button { text: qsTr("Choose"); enabled: AppDraftSettings.stop_script_enabled; onClicked: stopDialog.open() }
         }
     }
 
