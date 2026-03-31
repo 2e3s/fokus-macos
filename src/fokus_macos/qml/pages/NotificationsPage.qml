@@ -6,9 +6,10 @@ import QtQuick.Layouts
 ScrollView {
     id: root
     clip: true
+    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
     function bindFile(targetKey, dialog) {
-        Backend.draftSettings[targetKey] = Backend.toLocalPath(dialog.selectedFile.toString())
+        AppDraftSettings[targetKey] = Backend.toLocalPath(dialog.selectedFile.toString())
     }
 
     ColumnLayout {
@@ -20,6 +21,7 @@ ScrollView {
             Layout.fillWidth: true
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 10
                 CheckBox { text: qsTr("Show notification"); checked: AppDraftSettings.timer_start_notification_enabled; onToggled: AppDraftSettings.timer_start_notification_enabled = checked }
                 CheckBox { text: qsTr("Play sound"); checked: AppDraftSettings.timer_start_sfx_enabled; onToggled: AppDraftSettings.timer_start_sfx_enabled = checked }
                 RowLayout {
@@ -35,6 +37,7 @@ ScrollView {
             Layout.fillWidth: true
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 10
                 CheckBox { text: qsTr("Show notification"); checked: AppDraftSettings.timer_end_notification_enabled; onToggled: AppDraftSettings.timer_end_notification_enabled = checked }
                 CheckBox { text: qsTr("Play sound"); checked: AppDraftSettings.timer_stop_sfx_enabled; onToggled: AppDraftSettings.timer_stop_sfx_enabled = checked }
                 RowLayout {
@@ -50,6 +53,7 @@ ScrollView {
             Layout.fillWidth: true
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 10
                 CheckBox { text: qsTr("Play ticking sound"); checked: AppDraftSettings.timer_tick_sfx_enabled; onToggled: AppDraftSettings.timer_tick_sfx_enabled = checked }
                 RowLayout {
                     TextField { Layout.fillWidth: true; text: AppDraftSettings.timer_tick_sfx_filepath; enabled: AppDraftSettings.timer_tick_sfx_enabled; onTextChanged: AppDraftSettings.timer_tick_sfx_filepath = text }

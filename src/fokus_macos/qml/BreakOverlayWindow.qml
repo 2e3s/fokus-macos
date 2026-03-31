@@ -59,7 +59,7 @@ Window {
 
             Button {
                 text: "Postpone"
-                visible: AppState.isBreak && AppState.fullscreenButtonsPostpone
+                visible: AppState.showPostponeButton && AppState.fullscreenButtonsPostpone
                 onClicked: Backend.postpone()
             }
 

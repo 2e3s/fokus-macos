@@ -6,9 +6,10 @@ import QtQuick.Layouts
 ScrollView {
     id: root
     clip: true
+    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
     function bindFile(targetKey, dialog) {
-        Backend.draftSettings[targetKey] = Backend.toLocalPath(dialog.selectedFile.toString())
+        AppDraftSettings[targetKey] = Backend.toLocalPath(dialog.selectedFile.toString())
     }
 
     ColumnLayout {
@@ -24,6 +25,7 @@ ScrollView {
             Layout.fillWidth: true
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 10
                 CheckBox { checked: AppDraftSettings.start_focus_script_enabled; onToggled: AppDraftSettings.start_focus_script_enabled = checked; text: qsTr("Enabled") }
                 RowLayout {
                     TextField { Layout.fillWidth: true; text: AppDraftSettings.start_focus_script_filepath; enabled: AppDraftSettings.start_focus_script_enabled; onTextChanged: AppDraftSettings.start_focus_script_filepath = text }
@@ -37,6 +39,7 @@ ScrollView {
             Layout.fillWidth: true
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 10
                 CheckBox { checked: AppDraftSettings.start_break_script_enabled; onToggled: AppDraftSettings.start_break_script_enabled = checked; text: qsTr("Enabled") }
                 RowLayout {
                     TextField { Layout.fillWidth: true; text: AppDraftSettings.start_break_script_filepath; enabled: AppDraftSettings.start_break_script_enabled; onTextChanged: AppDraftSettings.start_break_script_filepath = text }
@@ -50,6 +53,7 @@ ScrollView {
             Layout.fillWidth: true
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 10
                 CheckBox { checked: AppDraftSettings.end_focus_script_enabled; onToggled: AppDraftSettings.end_focus_script_enabled = checked; text: qsTr("Enabled") }
                 RowLayout {
                     TextField { Layout.fillWidth: true; text: AppDraftSettings.end_focus_script_filepath; enabled: AppDraftSettings.end_focus_script_enabled; onTextChanged: AppDraftSettings.end_focus_script_filepath = text }
@@ -63,6 +67,7 @@ ScrollView {
             Layout.fillWidth: true
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 10
                 CheckBox { checked: AppDraftSettings.end_break_script_enabled; onToggled: AppDraftSettings.end_break_script_enabled = checked; text: qsTr("Enabled") }
                 RowLayout {
                     TextField { Layout.fillWidth: true; text: AppDraftSettings.end_break_script_filepath; enabled: AppDraftSettings.end_break_script_enabled; onTextChanged: AppDraftSettings.end_break_script_filepath = text }
@@ -76,6 +81,7 @@ ScrollView {
             Layout.fillWidth: true
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 10
                 CheckBox { checked: AppDraftSettings.stop_script_enabled; onToggled: AppDraftSettings.stop_script_enabled = checked; text: qsTr("Enabled") }
                 RowLayout {
                     TextField { Layout.fillWidth: true; text: AppDraftSettings.stop_script_filepath; enabled: AppDraftSettings.stop_script_enabled; onTextChanged: AppDraftSettings.stop_script_filepath = text }

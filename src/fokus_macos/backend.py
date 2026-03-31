@@ -19,6 +19,7 @@ LOGGER = logging.getLogger("fokus_macos")
 APP_ORG = "com.dv"
 APP_NAME = "Fokus"
 LAUNCH_AGENT_ID = "com.dv.fokus.macos"
+POSTPONE_MIGRATION_KEY = "portable_refactor_postpone_migration_v1"
 
 
 def launch_agent_path() -> Path:
@@ -410,6 +411,7 @@ class FokusBackend(QObject):
         super().__init__()
         self.qsettings = qsettings
         self.settings = AppSettings.load(qsettings)
+        self._migrate_saved_settings()
         self.sound_manager = SoundManager()
         self.script_runner = ScriptRunner()
         self.integration = MacOSIntegration()
@@ -435,6 +437,15 @@ class FokusBackend(QObject):
         self.refresh_state()
         if self.settings.autostart:
             self.engine.start()
+
+    def _migrate_saved_settings(self) -> None:
+        if self.qsettings.value(POSTPONE_MIGRATION_KEY, False, type=bool):
+            return
+        if not self.settings.flowmodoro_mode_enabled and not self.settings.fullscreen_buttons_postpone:
+            self.settings.fullscreen_buttons_postpone = True
+            self.settings.save(self.qsettings)
+        self.qsettings.setValue(POSTPONE_MIGRATION_KEY, True)
+        self.qsettings.sync()
 
     @Property(QObject, constant=True)
     def state(self) -> QObject:
@@ -635,6 +646,8 @@ class FokusBackend(QObject):
         settings = self._draft_to_settings()
         if settings.flowmodoro_mode_enabled:
             settings.fullscreen_buttons_postpone = False
+        elif self.settings.flowmodoro_mode_enabled and not settings.flowmodoro_mode_enabled:
+            settings.fullscreen_buttons_postpone = True
         self.settings = settings
         self.settings.save(self.qsettings)
         self.integration.sync_autostart(self.settings.autostart)

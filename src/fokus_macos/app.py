@@ -33,7 +33,8 @@ def load_windows(engine: QQmlApplicationEngine) -> None:
 
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
-    os.environ.setdefault("QT_QUICK_CONTROLS_STYLE", "Basic")
+    if os.environ.get("QT_QPA_PLATFORM") == "offscreen":
+        os.environ.setdefault("QT_QUICK_CONTROLS_STYLE", "Basic")
     ensure_assets_exist()
     QApplication.setApplicationName(APP_NAME)
     QApplication.setOrganizationName(APP_ORG)
