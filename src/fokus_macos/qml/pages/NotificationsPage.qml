@@ -14,52 +14,44 @@ ScrollView {
 
     ColumnLayout {
         width: parent.width
-        spacing: 16
+        spacing: 12
 
-        GroupBox {
-            title: qsTr("Start")
+        GridLayout {
             Layout.fillWidth: true
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 10
-                CheckBox { text: qsTr("Show notification"); checked: AppDraftSettings.timer_start_notification_enabled; onToggled: AppDraftSettings.timer_start_notification_enabled = checked }
-                CheckBox { text: qsTr("Play sound"); checked: AppDraftSettings.timer_start_sfx_enabled; onToggled: AppDraftSettings.timer_start_sfx_enabled = checked }
-                RowLayout {
-                    TextField { Layout.fillWidth: true; text: AppDraftSettings.timer_start_sfx_filepath; enabled: AppDraftSettings.timer_start_sfx_enabled; onTextChanged: AppDraftSettings.timer_start_sfx_filepath = text }
-                    Button { text: qsTr("Choose"); enabled: AppDraftSettings.timer_start_sfx_enabled; onClicked: startDialog.open() }
-                    Button { text: qsTr("Preview"); enabled: AppDraftSettings.timer_start_sfx_enabled; onClicked: Backend.previewSound(AppDraftSettings.timer_start_sfx_filepath) }
-                }
+            columns: 4
+            columnSpacing: 12
+            rowSpacing: 10
+
+            Label { text: qsTr("Start") }
+            CheckBox { text: qsTr("Show notification"); checked: AppDraftSettings.timer_start_notification_enabled; onToggled: AppDraftSettings.timer_start_notification_enabled = checked }
+            Item { Layout.columnSpan: 2; Layout.fillWidth: true }
+
+            Item { }
+            CheckBox { text: qsTr("Play sound"); checked: AppDraftSettings.timer_start_sfx_enabled; onToggled: AppDraftSettings.timer_start_sfx_enabled = checked }
+            TextField { Layout.fillWidth: true; text: AppDraftSettings.timer_start_sfx_filepath; enabled: AppDraftSettings.timer_start_sfx_enabled; onTextChanged: AppDraftSettings.timer_start_sfx_filepath = text }
+            RowLayout {
+                Button { text: qsTr("Choose"); enabled: AppDraftSettings.timer_start_sfx_enabled; onClicked: startDialog.open() }
+                Button { text: qsTr("Preview"); enabled: AppDraftSettings.timer_start_sfx_enabled; onClicked: Backend.previewSound(AppDraftSettings.timer_start_sfx_filepath) }
             }
-        }
 
-        GroupBox {
-            title: qsTr("End")
-            Layout.fillWidth: true
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 10
-                CheckBox { text: qsTr("Show notification"); checked: AppDraftSettings.timer_end_notification_enabled; onToggled: AppDraftSettings.timer_end_notification_enabled = checked }
-                CheckBox { text: qsTr("Play sound"); checked: AppDraftSettings.timer_stop_sfx_enabled; onToggled: AppDraftSettings.timer_stop_sfx_enabled = checked }
-                RowLayout {
-                    TextField { Layout.fillWidth: true; text: AppDraftSettings.timer_stop_sfx_filepath; enabled: AppDraftSettings.timer_stop_sfx_enabled; onTextChanged: AppDraftSettings.timer_stop_sfx_filepath = text }
-                    Button { text: qsTr("Choose"); enabled: AppDraftSettings.timer_stop_sfx_enabled; onClicked: stopDialog.open() }
-                    Button { text: qsTr("Preview"); enabled: AppDraftSettings.timer_stop_sfx_enabled; onClicked: Backend.previewSound(AppDraftSettings.timer_stop_sfx_filepath) }
-                }
+            Label { text: qsTr("End") }
+            CheckBox { text: qsTr("Show notification"); checked: AppDraftSettings.timer_end_notification_enabled; onToggled: AppDraftSettings.timer_end_notification_enabled = checked }
+            Item { Layout.columnSpan: 2; Layout.fillWidth: true }
+
+            Item { }
+            CheckBox { text: qsTr("Play sound"); checked: AppDraftSettings.timer_stop_sfx_enabled; onToggled: AppDraftSettings.timer_stop_sfx_enabled = checked }
+            TextField { Layout.fillWidth: true; text: AppDraftSettings.timer_stop_sfx_filepath; enabled: AppDraftSettings.timer_stop_sfx_enabled; onTextChanged: AppDraftSettings.timer_stop_sfx_filepath = text }
+            RowLayout {
+                Button { text: qsTr("Choose"); enabled: AppDraftSettings.timer_stop_sfx_enabled; onClicked: stopDialog.open() }
+                Button { text: qsTr("Preview"); enabled: AppDraftSettings.timer_stop_sfx_enabled; onClicked: Backend.previewSound(AppDraftSettings.timer_stop_sfx_filepath) }
             }
-        }
 
-        GroupBox {
-            title: qsTr("Tick")
-            Layout.fillWidth: true
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 10
-                CheckBox { text: qsTr("Play ticking sound"); checked: AppDraftSettings.timer_tick_sfx_enabled; onToggled: AppDraftSettings.timer_tick_sfx_enabled = checked }
-                RowLayout {
-                    TextField { Layout.fillWidth: true; text: AppDraftSettings.timer_tick_sfx_filepath; enabled: AppDraftSettings.timer_tick_sfx_enabled; onTextChanged: AppDraftSettings.timer_tick_sfx_filepath = text }
-                    Button { text: qsTr("Choose"); enabled: AppDraftSettings.timer_tick_sfx_enabled; onClicked: tickDialog.open() }
-                    Button { text: qsTr("Preview"); enabled: AppDraftSettings.timer_tick_sfx_enabled; onClicked: Backend.previewSound(AppDraftSettings.timer_tick_sfx_filepath) }
-                }
+            Label { text: qsTr("Tick") }
+            CheckBox { text: qsTr("Play sound"); checked: AppDraftSettings.timer_tick_sfx_enabled; onToggled: AppDraftSettings.timer_tick_sfx_enabled = checked }
+            TextField { Layout.fillWidth: true; text: AppDraftSettings.timer_tick_sfx_filepath; enabled: AppDraftSettings.timer_tick_sfx_enabled; onTextChanged: AppDraftSettings.timer_tick_sfx_filepath = text }
+            RowLayout {
+                Button { text: qsTr("Choose"); enabled: AppDraftSettings.timer_tick_sfx_enabled; onClicked: tickDialog.open() }
+                Button { text: qsTr("Preview"); enabled: AppDraftSettings.timer_tick_sfx_enabled; onClicked: Backend.previewSound(AppDraftSettings.timer_tick_sfx_filepath) }
             }
         }
     }
