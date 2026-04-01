@@ -47,10 +47,21 @@ python -m pip install -e ".[build]"
 fokus-macos-build
 ```
 
-This produces `dist/Fokus.app`, which you can launch directly in Finder or from Terminal:
+This produces:
+
+- `dist/Fokus.app` — macOS app bundle
+- `dist/Fokus/Fokus` — executable inside the supported `onedir` layout
+
+You can launch the app bundle directly in Finder or from Terminal:
 
 ```bash
 open dist/Fokus.app
+```
+
+Or run the executable directly:
+
+```bash
+./dist/Fokus/Fokus
 ```
 
 If you prefer to call PyInstaller yourself, the repository includes `fokus-macos.spec`.

@@ -5,6 +5,7 @@ import os
 import sys
 
 from PySide6.QtCore import QSettings, QUrl
+from PySide6.QtGui import QIcon
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtWidgets import QApplication, QMessageBox, QSystemTrayIcon
 
@@ -36,6 +37,7 @@ def main() -> int:
     QApplication.setOrganizationName(APP_ORG)
     QApplication.setQuitOnLastWindowClosed(False)
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(str(icon_path("pomodoro-start-light.svg"))))
     if not QSystemTrayIcon.isSystemTrayAvailable():
         QMessageBox.critical(None, APP_NAME, "No system tray/menu bar is available on this system.")
         return 1

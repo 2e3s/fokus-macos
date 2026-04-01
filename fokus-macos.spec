@@ -1,11 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
 from pathlib import Path
 
 from PyInstaller.utils.hooks import collect_data_files
 
 
 project_root = Path.cwd()
+bundle_icon = os.environ.get("FOKUS_BUNDLE_ICON")
 
 a = Analysis(
     ["src/fokus_macos/__main__.py"],
@@ -24,9 +26,8 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
     [],
+    exclude_binaries=True,
     name="Fokus",
     debug=False,
     bootloader_ignore_signals=False,
@@ -41,9 +42,18 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
 )
-app = BUNDLE(
+coll = COLLECT(
     exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name="Fokus",
+)
+app = BUNDLE(
+    coll,
     name="Fokus.app",
-    icon=None,
+    icon=bundle_icon,
     bundle_identifier="com.dv.fokus.macos",
 )
