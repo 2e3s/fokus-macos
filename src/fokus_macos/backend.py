@@ -281,12 +281,17 @@ class TimerEngine(QObject):
         self.updated.emit()
 
     def skip(self) -> None:
+        was_running = self.running
+        if was_running:
+            self.execute_script("end")
         self.next_state()
         self.reset_time()
         if not self.is_break():
             self.integration.set_do_not_disturb(self.settings.do_not_disturb_enabled)
         else:
             self.integration.set_do_not_disturb(False)
+        if was_running:
+            self.execute_script("start")
         self.updated.emit()
 
     def shift_counter(self, seconds: int) -> None:
