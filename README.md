@@ -1,6 +1,7 @@
 # Fokus for macOS
 
-Fokus is now a standalone macOS menu bar Pomodoro application derived from the original KDE Plasma plasmoid in this repository.
+Fokus is a standalone macOS menu bar Pomodoro application.
+It is derived from KDE Plasma widget https://gitlab.com/divinae/focus-plasmoid/
 
 The new app keeps the original timer model and settings surface:
 
@@ -10,9 +11,8 @@ The new app keeps the original timer model and settings surface:
 - Optional sound effects
 - Script hooks for focus/break start and end
 - Fullscreen break overlay
-- Launch-at-login support through a macOS LaunchAgent
 
-The legacy plasmoid sources are still kept under `package/` as the reference implementation and asset source.
+The legacy plasmoid sources are still kept under `package/` as the reference.
 
 ## Requirements
 
@@ -22,14 +22,15 @@ The legacy plasmoid sources are still kept under `package/` as the reference imp
 
 ## Run locally
 
+[Download](https://github.com/2e3s/fokus-macos/releases) the compressed bundle and install by dragging in Finder's Applications folder.
+Otherwise, pull the sources and run:
+
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -e .
 fokus-macos
 ```
-
-If your virtual environment has an older `pip`, editable install still works because the project includes a `setup.py` compatibility shim.
 
 You can also run it directly with:
 
@@ -49,50 +50,13 @@ fokus-macos-build
 
 This produces:
 
-- `dist/Fokus.app` — macOS app bundle
+- `dist/Fokus.app` — macOS app bundle which can be installed by dragging in Finder's Applications folder.
 - `dist/Fokus/Fokus` — executable inside the supported `onedir` layout
 
-You can launch the app bundle directly in Finder or from Terminal:
-
-```bash
-open dist/Fokus.app
-```
-
-Or run the executable directly:
-
-```bash
-./dist/Fokus/Fokus
-```
-
 If you prefer to call PyInstaller yourself, the repository includes `fokus-macos.spec`.
-
-## What the macOS app does
-
-- Runs in the macOS menu bar via Qt's `QSystemTrayIcon`
-- Opens a timer window on click
-- Stores settings with `QSettings`
-- Shows desktop notifications
-- Plays sound files through Qt Multimedia
-- Executes user-provided shell scripts with `/bin/sh`
-- Creates or removes `~/Library/LaunchAgents/com.dv.fokus.macos.plist` when launch-at-login is toggled
 
 ## Notes about platform differences
 
 - The menu bar item is icon-based. The old Plasma options for hiding/showing compact-view icon/time are kept in settings for compatibility, but Qt's macOS tray API does not expose the same text-in-tray behavior as the plasmoid.
 - The old KDE Do Not Disturb integration does not exist on macOS. The setting is preserved, but the app does not force Focus mode itself. If you want that behavior, use the script hooks to call your own macOS automation.
-- Default Linux sound paths from the plasmoid were intentionally not carried over. On macOS, choose your own audio files in Settings.
-
-## Project layout
-
-- `src/fokus_macos/` — standalone macOS application
-- `src/fokus_macos/icons/` — tray/progress SVG assets bundled with the Python app
-- `package/` — original Plasma plasmoid source kept for reference
-
-## Validation
-
-The macOS port was validated with:
-
-```bash
-python -m compileall src
-QT_QPA_PLATFORM=offscreen python -c "import fokus_macos.app as app; app.ensure_assets_exist(); print(app.APP_NAME)"
-```
+- Default Linux sound paths from the plasmoid were intentionally not carried over. On macOS, choose your own audio files in Settings. Some system sounds may be found at `/System/Library/Sounds/`.
